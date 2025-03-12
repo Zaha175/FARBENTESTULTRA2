@@ -98,36 +98,47 @@
     transform: translateX(1.5rem);
   }
 </style>
-<title>Farbenvergleichstest</title>
+<title>Color Comparison Test | Farbenvergleichstest</title>
 </head>
 <body class="font-sans text-center p-5 m-0 min-h-screen flex flex-col bg-gradient-to-b from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)]">
 
-<!-- Dark mode toggle -->
-<div class="absolute top-4 right-4 flex items-center">
-  <span class="mr-2 text-gray-800 dark:text-gray-200">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-    </svg>
-  </span>
-  <label class="toggle-switch">
-    <input type="checkbox" id="darkModeToggle">
-    <span class="toggle-slider"></span>
-  </label>
-  <span class="ml-2 text-gray-800 dark:text-gray-200">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-    </svg>
-  </span>
+<!-- Top controls: Language + Dark mode toggle -->
+<div class="flex justify-between items-center mb-6">
+  <!-- Language selector -->
+  <div class="language-selector">
+    <select id="languageSelector" class="bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 rounded-md py-1 px-2 text-sm font-medium text-gray-700 dark:text-white">
+      <option value="de">Deutsch</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+  
+  <!-- Dark mode toggle -->
+  <div class="flex items-center">
+    <span class="mr-2 text-gray-800 dark:text-gray-200">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+    </span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="darkModeToggle">
+      <span class="toggle-slider"></span>
+    </label>
+    <span class="ml-2 text-gray-800 dark:text-gray-200">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+    </span>
+  </div>
 </div>
 
-<h1 class="text-3xl mb-6 font-bold text-[#000080] dark:text-[#8080ff]">Farbenvergleichstest</h1>
+<h1 class="text-3xl mb-6 font-bold text-[#000080] dark:text-[#8080ff]" id="gameTitle">Farbenvergleichstest</h1>
 
 <!-- Start Screen -->
 <div id="startScreen" class="my-5 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg max-w-lg mx-auto">
-  <h2 class="text-xl font-bold mb-4 dark:text-white">Spieloptionen</h2>
+  <h2 class="text-xl font-bold mb-4 dark:text-white" id="optionsTitle">Spieloptionen</h2>
   
   <div class="mb-4">
-    <p class="mb-2 dark:text-white">Anzahl der Aufgaben:</p>
+    <p class="mb-2 dark:text-white" id="taskCountLabel">Anzahl der Aufgaben:</p>
     <div class="flex flex-wrap justify-center gap-2">
       <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
         <input type="radio" name="taskCount" value="10" checked class="mr-1"> 10
@@ -145,38 +156,38 @@
   </div>
   
   <div class="mb-4">
-    <p class="mb-2 dark:text-white">Schwierigkeitsgrad:</p>
+    <p class="mb-2 dark:text-white" id="difficultyLabel">Schwierigkeitsgrad:</p>
     <div class="flex flex-wrap justify-center gap-2">
       <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
-        <input type="radio" name="difficulty" value="easy" checked class="mr-1"> Leicht
+        <input type="radio" name="difficulty" value="easy" checked class="mr-1"> <span class="difficulty-easy">Leicht</span>
       </label>
       <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
-        <input type="radio" name="difficulty" value="medium" class="mr-1"> Mittel
+        <input type="radio" name="difficulty" value="medium" class="mr-1"> <span class="difficulty-medium">Mittel</span>
       </label>
       <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
-        <input type="radio" name="difficulty" value="hard" class="mr-1"> Schwer
+        <input type="radio" name="difficulty" value="hard" class="mr-1"> <span class="difficulty-hard">Schwer</span>
       </label>
     </div>
   </div>
   
   <div class="mb-4">
-    <p class="mb-2 dark:text-white">Spielmodus:</p>
+    <p class="mb-2 dark:text-white" id="gameModeLabel">Spielmodus:</p>
     <div class="flex flex-wrap justify-center gap-2">
       <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
-        <input type="radio" name="gameMode" value="colors" checked class="mr-1"> Farben
+        <input type="radio" name="gameMode" value="colors" checked class="mr-1"> <span class="gameMode-colors">Farben</span>
       </label>
       <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
-        <input type="radio" name="gameMode" value="shapes" class="mr-1"> Formen
+        <input type="radio" name="gameMode" value="shapes" class="mr-1"> <span class="gameMode-shapes">Formen</span>
       </label>
       <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
-        <input type="radio" name="gameMode" value="both" class="mr-1"> Beides
+        <input type="radio" name="gameMode" value="both" class="mr-1"> <span class="gameMode-both">Beides</span>
       </label>
     </div>
   </div>
   
   <div class="mb-4">
     <label class="inline-flex items-center dark:text-white">
-      <input type="checkbox" id="timerCheckbox" class="mr-2"> Zeitbegrenzung pro Aufgabe (5 Sekunden)
+      <input type="checkbox" id="timerCheckbox" class="mr-2"> <span id="timerLabel">Zeitbegrenzung pro Aufgabe (5 Sekunden)</span>
     </label>
   </div>
   
@@ -214,7 +225,7 @@
     <div class="bottom-shapes-container flex justify-center items-center mb-5 flex-wrap md:flex-nowrap" id="bottomRow"></div>
 
     <!-- Instructions -->
-    <div class="instruction dark:text-white my-4 mx-auto max-w-lg text-base leading-relaxed">
+    <div class="instruction dark:text-white my-4 mx-auto max-w-lg text-base leading-relaxed" id="instructionText">
       Klicke bei Übereinstimmung den grünen Button an!<br>
       Im anderen Fall klicke den roten Button an!
     </div>
@@ -239,7 +250,7 @@
 
   <!-- Results section -->
   <div id="resultContainer" class="hidden mt-6 w-full max-w-3xl mx-auto bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold mb-4 dark:text-white">Spielergebnis</h2>
+    <h2 class="text-2xl font-bold mb-4 dark:text-white" id="resultsTitle">Spielergebnis</h2>
     <div id="result" class="p-4 border-2 border-[var(--primary-color)] rounded-lg dark:text-white"></div>
     
     <div class="flex flex-wrap justify-center gap-4 mt-6">
@@ -253,13 +264,173 @@
     
     <!-- Stats section -->
     <div id="statsContainer" class="hidden mt-4">
-      <h3 class="text-lg font-bold mb-2 dark:text-white">Detaillierte Statistik</h3>
+      <h3 class="text-lg font-bold mb-2 dark:text-white" id="statsTitle">Detaillierte Statistik</h3>
       <div id="statsContent" class="text-sm dark:text-white"></div>
     </div>
   </div>
 </div>
 
 <script>
+// Translations
+const translations = {
+  de: {
+    gameTitle: "Farbenvergleichstest",
+    optionsTitle: "Spieloptionen",
+    taskCountLabel: "Anzahl der Aufgaben:",
+    difficultyLabel: "Schwierigkeitsgrad:",
+    difficultyEasy: "Leicht",
+    difficultyMedium: "Mittel",
+    difficultyHard: "Schwer",
+    gameModeLabel: "Spielmodus:",
+    gameModeColors: "Farben",
+    gameModeShapes: "Formen",
+    gameModeBoth: "Beides",
+    timerLabel: "Zeitbegrenzung pro Aufgabe (5 Sekunden)",
+    startButton: "Spiel starten",
+    taskNumber: "Aufgabe {current} von {total}",
+    instruction: "Klicke bei Übereinstimmung den grünen Button an!<br>Im anderen Fall klicke den roten Button an!",
+    correctFeedback: "Richtig!",
+    incorrectFeedback: "Falsch!",
+    resultsTitle: "Spielergebnis",
+    correctAnswers: "Richtige Antworten",
+    avgTime: "Durchschnittszeit",
+    difficulty: "Schwierigkeitsgrad",
+    gameMode: "Spielmodus",
+    rating: "Bewertung",
+    restartButton: "Neu starten",
+    showStatsButton: "Statistik anzeigen",
+    hideStatsButton: "Statistik ausblenden",
+    statsTitle: "Detaillierte Statistik",
+    responseTimes: "Antwortzeiten",
+    responseFast: "Schnell (<1.5s)",
+    responseMedium: "Mittel (1.5-3s)",
+    responseSlow: "Langsam (>3s)",
+    performanceStats: "Leistungsstatistik",
+    longestStreak: "Längste Streak",
+    correctInRow: "richtige Antworten in Folge",
+    timeouts: "Zeitüberschreitungen",
+    fastestResponse: "Schnellste Antwort",
+    slowestResponse: "Langsamste Antwort",
+    tableNumHeader: "Nr.",
+    tableAnswerHeader: "Antwort",
+    tableTimeHeader: "Zeit (s)",
+    timeExpired: "Zeit abgelaufen",
+    shareButton: "Auf X teilen",
+    shareText: "Mein Farbenvergleichstest-Score: {result}. Teste dich: {url} #FarbenChallenge",
+    ratingVerygood: "sehr gut",
+    ratingGood: "gut",
+    ratingSatisfactory: "befriedigend",
+    ratingAdequate: "ausreichend",
+    ratingFailed: "nicht bestanden"
+  },
+  en: {
+    gameTitle: "Color Comparison Test",
+    optionsTitle: "Game Options",
+    taskCountLabel: "Number of tasks:",
+    difficultyLabel: "Difficulty level:",
+    difficultyEasy: "Easy",
+    difficultyMedium: "Medium",
+    difficultyHard: "Hard",
+    gameModeLabel: "Game mode:",
+    gameModeColors: "Colors",
+    gameModeShapes: "Shapes",
+    gameModeBoth: "Both",
+    timerLabel: "Time limit per task (5 seconds)",
+    startButton: "Start Game",
+    taskNumber: "Task {current} of {total}",
+    instruction: "Click the green button if there's a match!<br>Otherwise click the red button!",
+    correctFeedback: "Correct!",
+    incorrectFeedback: "Wrong!",
+    resultsTitle: "Game Results",
+    correctAnswers: "Correct answers",
+    avgTime: "Average time",
+    difficulty: "Difficulty",
+    gameMode: "Game mode",
+    rating: "Rating",
+    restartButton: "Restart",
+    showStatsButton: "Show Statistics",
+    hideStatsButton: "Hide Statistics",
+    statsTitle: "Detailed Statistics",
+    responseTimes: "Response Times",
+    responseFast: "Fast (<1.5s)",
+    responseMedium: "Medium (1.5-3s)",
+    responseSlow: "Slow (>3s)",
+    performanceStats: "Performance Statistics",
+    longestStreak: "Longest streak",
+    correctInRow: "correct answers in a row",
+    timeouts: "Timeouts",
+    fastestResponse: "Fastest response",
+    slowestResponse: "Slowest response",
+    tableNumHeader: "No.",
+    tableAnswerHeader: "Answer",
+    tableTimeHeader: "Time (s)",
+    timeExpired: "Time expired",
+    shareButton: "Share on X",
+    shareText: "My Color Comparison Test score: {result}. Test yourself: {url} #ColorChallenge",
+    ratingVerygood: "excellent",
+    ratingGood: "good",
+    ratingSatisfactory: "satisfactory",
+    ratingAdequate: "adequate",
+    ratingFailed: "failed"
+  }
+};
+
+// Current language
+let currentLanguage = 'de';
+
+// Function to update all text elements based on current language
+function updateLanguage(lang) {
+  currentLanguage = lang;
+  
+  // Update all static text elements
+  document.getElementById('gameTitle').textContent = translations[lang].gameTitle;
+  document.getElementById('optionsTitle').textContent = translations[lang].optionsTitle;
+  document.getElementById('taskCountLabel').textContent = translations[lang].taskCountLabel;
+  document.getElementById('difficultyLabel').textContent = translations[lang].difficultyLabel;
+  document.getElementById('gameModeLabel').textContent = translations[lang].gameModeLabel;
+  document.getElementById('timerLabel').textContent = translations[lang].timerLabel;
+  document.getElementById('startButton').textContent = translations[lang].startButton;
+  document.getElementById('instructionText').innerHTML = translations[lang].instruction;
+  document.getElementById('resultsTitle').textContent = translations[lang].resultsTitle;
+  document.getElementById('restartButton').textContent = translations[lang].restartButton;
+  document.getElementById('showStatsButton').textContent = translations[lang].showStatsButton;
+  document.getElementById('statsTitle').textContent = translations[lang].statsTitle;
+  
+  // Update difficulty labels
+  document.querySelectorAll('.difficulty-easy').forEach(el => el.textContent = translations[lang].difficultyEasy);
+  document.querySelectorAll('.difficulty-medium').forEach(el => el.textContent = translations[lang].difficultyMedium);
+  document.querySelectorAll('.difficulty-hard').forEach(el => el.textContent = translations[lang].difficultyHard);
+  
+  // Update game mode labels
+  document.querySelectorAll('.gameMode-colors').forEach(el => el.textContent = translations[lang].gameModeColors);
+  document.querySelectorAll('.gameMode-shapes').forEach(el => el.textContent = translations[lang].gameModeShapes);
+  document.querySelectorAll('.gameMode-both').forEach(el => el.textContent = translations[lang].gameModeBoth);
+  
+  // Update the document language attribute
+  document.documentElement.lang = lang;
+  
+  // Update task number if game is in progress
+  if (currentTaskIndex < tasks.length) {
+    updateTaskNumber();
+  }
+  
+  // Update stats button text if stats are showing
+  const statsContainer = document.getElementById('statsContainer');
+  if (statsContainer.style.display === 'block') {
+    document.getElementById('showStatsButton').textContent = translations[lang].hideStatsButton;
+  }
+  
+  // Re-generate stats if they're visible
+  if (document.getElementById('statsContainer').style.display === 'block' && results.length > 0) {
+    generateDetailedStats();
+  }
+  
+  // Re-generate results if they're visible
+  if (document.getElementById('resultContainer').style.display === 'block' && results.length > 0) {
+    showResults(true); // true means just update text, don't recreate elements
+  }
+}
+
 // Dark mode variables and functions
 let userPrefersDark = false;
 let systemPrefersDark = false;
@@ -301,15 +472,6 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', eve
   }
 });
 
-// Setup dark mode toggle
-document.getElementById('darkModeToggle').addEventListener('change', function() {
-  userPrefersDark = this.checked;
-  updateDarkMode();
-});
-
-// Initial dark mode setup
-updateDarkMode();
-
 // Color pools for different difficulty levels
 const colorPool = {
   easy: ['#0000FF', '#FFFF00', '#FF0000', '#FFFFFF', '#00FF00', '#800080', '#FFA500', '#000000'],
@@ -350,6 +512,30 @@ document.getElementById('yesButton').addEventListener('click', () => evaluateAns
 document.getElementById('noButton').addEventListener('click', () => evaluateAnswer(false));
 document.getElementById('restartButton').addEventListener('click', restartTest);
 document.getElementById('showStatsButton').addEventListener('click', toggleStats);
+
+// Setup dark mode toggle
+document.getElementById('darkModeToggle').addEventListener('change', function() {
+  userPrefersDark = this.checked;
+  updateDarkMode();
+});
+
+// Setup language selector
+document.getElementById('languageSelector').addEventListener('change', function() {
+  updateLanguage(this.value);
+});
+
+// Initial setup
+updateDarkMode();
+updateLanguage(currentLanguage);
+
+// Update task number text
+function updateTaskNumber() {
+  const taskNumberEl = document.getElementById('taskNumber');
+  const text = translations[currentLanguage].taskNumber
+    .replace('{current}', currentTaskIndex + 1)
+    .replace('{total}', tasks.length);
+  taskNumberEl.textContent = text;
+}
 
 function startTest() {
   // Get selected options
@@ -506,7 +692,7 @@ function showTask(index) {
   const task = tasks[index];
   
   // Update task number and progress bar
-  document.getElementById('taskNumber').textContent = `Aufgabe ${index + 1} von ${tasks.length}`;
+  updateTaskNumber();
   document.getElementById('progressBar').style.width = `${((index) / tasks.length) * 100}%`;
   
   const topRow = document.getElementById('topRow');
@@ -737,7 +923,10 @@ function evaluateAnswer(userSaysYes, timedOut = false) {
 function showFeedback(isCorrect) {
   const feedbackEl = document.getElementById('feedbackMessage');
   feedbackEl.style.display = 'block';
-  feedbackEl.textContent = isCorrect ? "Richtig!" : "Falsch!";
+  feedbackEl.textContent = isCorrect ? 
+    translations[currentLanguage].correctFeedback : 
+    translations[currentLanguage].incorrectFeedback;
+  
   feedbackEl.className = isCorrect 
     ? "bg-[var(--correct-color)] py-2 px-4 rounded-lg text-white font-bold mx-auto max-w-md my-2 result-animation"
     : "bg-[var(--incorrect-color)] py-2 px-4 rounded-lg text-white font-bold mx-auto max-w-md my-2 result-animation";
@@ -754,7 +943,7 @@ function nextTask() {
   }
 }
 
-function showResults() {
+function showResults(updateOnly = false) {
   // Update progress bar to 100%
   document.getElementById('progressBar').style.width = '100%';
   
@@ -764,12 +953,14 @@ function showResults() {
   const avgTime = results.reduce((sum, r) => sum + r.reactionTime, 0) / tasks.length;
   const timeoutCount = results.filter(r => r.timedOut).length;
   
+  // Get rating based on current language
+  const t = translations[currentLanguage];
   let baseRating = '';
-  if (correctPercent >= 90) baseRating = 'sehr gut';
-  else if (correctPercent >= 80) baseRating = 'gut';
-  else if (correctPercent >= 70) baseRating = 'befriedigend';
-  else if (correctPercent >= 60) baseRating = 'ausreichend';
-  else baseRating = 'nicht bestanden';
+  if (correctPercent >= 90) baseRating = t.ratingVerygood;
+  else if (correctPercent >= 80) baseRating = t.ratingGood;
+  else if (correctPercent >= 70) baseRating = t.ratingSatisfactory;
+  else if (correctPercent >= 60) baseRating = t.ratingAdequate;
+  else baseRating = t.ratingFailed;
   
   // Adjust rating based on difficulty
   let difficultyBonus = 0;
@@ -783,12 +974,13 @@ function showResults() {
     timePenaltyPercent = timeOver * 10;
   }
   
+  // Using localized rating terms
   const ratingMap = { 
-    'sehr gut': 5, 
-    'gut': 4, 
-    'befriedigend': 3, 
-    'ausreichend': 2, 
-    'nicht bestanden': 1 
+    [t.ratingVerygood]: 5, 
+    [t.ratingGood]: 4, 
+    [t.ratingSatisfactory]: 3, 
+    [t.ratingAdequate]: 2, 
+    [t.ratingFailed]: 1 
   };
   
   let ratingValue = ratingMap[baseRating];
@@ -801,17 +993,30 @@ function showResults() {
   
   const finalRating = Object.keys(ratingMap).find(key => ratingMap[key] === Math.round(ratingValue));
   
-  // Show results container
-  document.getElementById('resultContainer').style.display = 'block';
+  // Show results container if not just updating
+  if (!updateOnly) {
+    document.getElementById('resultContainer').style.display = 'block';
+  }
+  
+  // Get localized difficulty and game mode text
+  let difficultyText = '';
+  if (difficulty === 'easy') difficultyText = translations[currentLanguage].difficultyEasy;
+  else if (difficulty === 'medium') difficultyText = translations[currentLanguage].difficultyMedium;
+  else difficultyText = translations[currentLanguage].difficultyHard;
+  
+  let gameModeText = '';
+  if (gameMode === 'colors') gameModeText = translations[currentLanguage].gameModeColors;
+  else if (gameMode === 'shapes') gameModeText = translations[currentLanguage].gameModeShapes;
+  else gameModeText = translations[currentLanguage].gameModeBoth;
   
   // Update result text
   let resultText = `
     <div class="text-lg">
-      <div class="mb-3"><span class="font-bold">Richtige Antworten:</span> ${correctCount} von ${tasks.length} (${Math.round(correctPercent)}%)</div>
-      <div class="mb-3"><span class="font-bold">Durchschnittszeit:</span> ${avgTime.toFixed(2)} Sekunden</div>
-      <div class="mb-3"><span class="font-bold">Schwierigkeitsgrad:</span> ${difficulty === 'easy' ? 'Leicht' : (difficulty === 'medium' ? 'Mittel' : 'Schwer')}</div>
-      <div class="mb-3"><span class="font-bold">Spielmodus:</span> ${gameMode === 'colors' ? 'Farben' : (gameMode === 'shapes' ? 'Formen' : 'Beides')}</div>
-      <div class="text-xl font-bold mt-3 ${ratingValue >= 4 ? 'text-green-600 dark:text-green-400' : (ratingValue < 3 ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400')}">Bewertung: ${finalRating}</div>
+      <div class="mb-3"><span class="font-bold">${translations[currentLanguage].correctAnswers}:</span> ${correctCount} ${currentLanguage === 'de' ? 'von' : 'of'} ${tasks.length} (${Math.round(correctPercent)}%)</div>
+      <div class="mb-3"><span class="font-bold">${translations[currentLanguage].avgTime}:</span> ${avgTime.toFixed(2)} ${currentLanguage === 'de' ? 'Sekunden' : 'seconds'}</div>
+      <div class="mb-3"><span class="font-bold">${translations[currentLanguage].difficulty}:</span> ${difficultyText}</div>
+      <div class="mb-3"><span class="font-bold">${translations[currentLanguage].gameMode}:</span> ${gameModeText}</div>
+      <div class="text-xl font-bold mt-3 ${ratingValue >= 4 ? 'text-green-600 dark:text-green-400' : (ratingValue < 3 ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400')}">${translations[currentLanguage].rating}: ${finalRating}</div>
     </div>
   `;
   
@@ -820,29 +1025,41 @@ function showResults() {
   // Prepare detailed stats
   generateDetailedStats();
   
-  // Hide game elements
-  document.getElementById('yesButton').style.display = 'none';
-  document.getElementById('noButton').style.display = 'none';
-  
-  // Add share button
-  const shareButton = document.createElement('button');
-  shareButton.textContent = 'Auf X teilen';
-  shareButton.className = 'bg-[var(--primary-color)] hover:opacity-90 text-white font-bold py-2 px-4 rounded-full transform transition hover:scale-105 mt-4';
-  shareButton.addEventListener('click', () => {
-    const resultText = document.getElementById('result').innerText;
-    const url = window.location.href;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Mein Farbenvergleichstest-Score: ${resultText}. Teste dich: ${url} #FarbenChallenge`)}`, '_blank');
-  });
-  document.getElementById('resultContainer').appendChild(shareButton);
+  // Hide game elements if not just updating
+  if (!updateOnly) {
+    document.getElementById('yesButton').style.display = 'none';
+    document.getElementById('noButton').style.display = 'none';
+    
+    // Add share button (only if not already present)
+    let shareButton = document.querySelector('.share-button');
+    if (!shareButton) {
+      shareButton = document.createElement('button');
+      shareButton.textContent = translations[currentLanguage].shareButton;
+      shareButton.className = 'share-button bg-[var(--primary-color)] hover:opacity-90 text-white font-bold py-2 px-4 rounded-full transform transition hover:scale-105 mt-4';
+      shareButton.addEventListener('click', () => {
+        const resultText = document.getElementById('result').innerText;
+        const url = window.location.href;
+        const shareText = translations[currentLanguage].shareText
+          .replace('{result}', resultText)
+          .replace('{url}', url);
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank');
+      });
+      document.getElementById('resultContainer').appendChild(shareButton);
+    } else {
+      // Update existing share button text
+      shareButton.textContent = translations[currentLanguage].shareButton;
+    }
+  }
 }
 
 function generateDetailedStats() {
+  const t = translations[currentLanguage];
   const statsContent = document.getElementById('statsContent');
   
   // Calculate fast/medium/slow response distribution
-  const fastResponses = taskHistory.filter(t => t.reactionTime < 1.5).length;
-  const mediumResponses = taskHistory.filter(t => t.reactionTime >= 1.5 && t.reactionTime < 3).length;
-  const slowResponses = taskHistory.filter(t => t.reactionTime >= 3).length;
+  const fastResponses = taskHistory.filter(r => r.reactionTime < 1.5).length;
+  const mediumResponses = taskHistory.filter(r => r.reactionTime >= 1.5 && r.reactionTime < 3).length;
+  const slowResponses = taskHistory.filter(r => r.reactionTime >= 3).length;
   
   // Calculate streaks
   let currentStreak = 0;
@@ -861,21 +1078,21 @@ function generateDetailedStats() {
   let statsHTML = `
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg">
-        <h4 class="font-bold mb-2">Antwortzeiten</h4>
+        <h4 class="font-bold mb-2">${t.responseTimes}</h4>
         <div class="flex items-center mb-1">
-          <span class="w-1/2">Schnell (&lt;1.5s):</span>
+          <span class="w-1/2">${t.responseFast}:</span>
           <div class="w-1/2 h-4 bg-gray-200 dark:bg-gray-600 rounded-full">
             <div class="h-4 bg-green-500 rounded-full" style="width: ${(fastResponses / tasks.length) * 100}%"></div>
           </div>
         </div>
         <div class="flex items-center mb-1">
-          <span class="w-1/2">Mittel (1.5-3s):</span>
+          <span class="w-1/2">${t.responseMedium}:</span>
           <div class="w-1/2 h-4 bg-gray-200 dark:bg-gray-600 rounded-full">
             <div class="h-4 bg-yellow-500 rounded-full" style="width: ${(mediumResponses / tasks.length) * 100}%"></div>
           </div>
         </div>
         <div class="flex items-center">
-          <span class="w-1/2">Langsam (&gt;3s):</span>
+          <span class="w-1/2">${t.responseSlow}:</span>
           <div class="w-1/2 h-4 bg-gray-200 dark:bg-gray-600 rounded-full">
             <div class="h-4 bg-red-500 rounded-full" style="width: ${(slowResponses / tasks.length) * 100}%"></div>
           </div>
@@ -883,11 +1100,11 @@ function generateDetailedStats() {
       </div>
       
       <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg">
-        <h4 class="font-bold mb-2">Leistungsstatistik</h4>
-        <div>Längste Streak: ${maxStreak} richtige Antworten in Folge</div>
-        <div>Zeitüberschreitungen: ${taskHistory.filter(t => t.timedOut).length}</div>
-        <div>Schnellste Antwort: ${Math.min(...taskHistory.map(t => t.reactionTime)).toFixed(2)}s</div>
-        <div>Langsamste Antwort: ${Math.max(...taskHistory.map(t => t.reactionTime)).toFixed(2)}s</div>
+        <h4 class="font-bold mb-2">${t.performanceStats}</h4>
+        <div>${t.longestStreak}: ${maxStreak} ${t.correctInRow}</div>
+        <div>${t.timeouts}: ${taskHistory.filter(r => r.timedOut).length}</div>
+        <div>${t.fastestResponse}: ${Math.min(...taskHistory.map(r => r.reactionTime)).toFixed(2)}s</div>
+        <div>${t.slowestResponse}: ${Math.max(...taskHistory.map(r => r.reactionTime)).toFixed(2)}s</div>
       </div>
     </div>
     
@@ -895,9 +1112,9 @@ function generateDetailedStats() {
       <table class="min-w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-xs">
         <thead>
           <tr class="bg-gray-200 dark:bg-slate-800">
-            <th class="py-2 px-3 border">Nr.</th>
-            <th class="py-2 px-3 border">Antwort</th>
-            <th class="py-2 px-3 border">Zeit (s)</th>
+            <th class="py-2 px-3 border">${t.tableNumHeader}</th>
+            <th class="py-2 px-3 border">${t.tableAnswerHeader}</th>
+            <th class="py-2 px-3 border">${t.tableTimeHeader}</th>
           </tr>
         </thead>
         <tbody>
@@ -908,7 +1125,7 @@ function generateDetailedStats() {
       <tr class="${index % 2 === 0 ? 'bg-gray-100 dark:bg-slate-600' : 'bg-white dark:bg-slate-700'}">
         <td class="py-2 px-3 border text-center">${task.taskNumber}</td>
         <td class="py-2 px-3 border text-center ${task.userCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${task.userCorrect ? '✓' : '✗'}</td>
-        <td class="py-2 px-3 border text-center">${task.timedOut ? 'Zeit abgelaufen' : task.reactionTime.toFixed(2)}</td>
+        <td class="py-2 px-3 border text-center">${task.timedOut ? t.timeExpired : task.reactionTime.toFixed(2)}</td>
       </tr>
     `;
   });
@@ -926,10 +1143,10 @@ function toggleStats() {
   const statsContainer = document.getElementById('statsContainer');
   if (statsContainer.style.display === 'none' || statsContainer.style.display === '') {
     statsContainer.style.display = 'block';
-    document.getElementById('showStatsButton').textContent = 'Statistik ausblenden';
+    document.getElementById('showStatsButton').textContent = translations[currentLanguage].hideStatsButton;
   } else {
     statsContainer.style.display = 'none';
-    document.getElementById('showStatsButton').textContent = 'Statistik anzeigen';
+    document.getElementById('showStatsButton').textContent = translations[currentLanguage].showStatsButton;
   }
 }
 
