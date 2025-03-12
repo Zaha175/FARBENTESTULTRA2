@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes shimmer {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+  
+  .shape-box:hover .shape-svg {
+    animation: pulse 1s infinite;
+  }
+  
+  .result-animation {
+    animation: shimmer 2s infinite;
+  }
+  
+  .progress-bar {
+    transition: width 0.3s ease;
+  }
+
+  :root {
+    --primary-color: #5D5CDE;
+    --correct-color: #22c55e;
+    --incorrect-color: #ef4444;
+  }
+
+  .dark {
+    --bg-gradient-from: #1e293b;
+    --bg-gradient-to: #0f172a;
+  }
+
+  .light {
+    --bg-gradient-from: #e6f2ff;
+    --bg-gradient-to: #cce0ff;
+  }
+
+  .timer-circle {
+    transition: stroke-dashoffset 1s linear;
+  }
+</style>
+<title>Farbenvergleichstest</title>
+</head>
+<body class="font-sans text-center p-5 m-0 min-h-screen flex flex-col bg-gradient-to-b from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)]">
+
+<h1 class="text-3xl mb-6 font-bold text-[#000080] dark:text-[#8080ff]">Farbenvergleichstest</h1>
+
+<!-- Start Screen -->
+<div id="startScreen" class="my-5 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg max-w-lg mx-auto">
+  <h2 class="text-xl font-bold mb-4 dark:text-white">Spieloptionen</h2>
+  
+  <div class="mb-4">
+    <p class="mb-2 dark:text-white">Anzahl der Aufgaben:</p>
+    <div class="flex flex-wrap justify-center gap-2">
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="taskCount" value="10" checked class="mr-1"> 10
+      </label>
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="taskCount" value="20" class="mr-1"> 20
+      </label>
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="taskCount" value="30" class="mr-1"> 30
+      </label>
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="taskCount" value="40" class="mr-1"> 40
+      </label>
+    </div>
+  </div>
+  
+  <div class="mb-4">
+    <p class="mb-2 dark:text-white">Schwierigkeitsgrad:</p>
+    <div class="flex flex-wrap justify-center gap-2">
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="difficulty" value="easy" checked class="mr-1"> Leicht
+      </label>
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="difficulty" value="medium" class="mr-1"> Mittel
+      </label>
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="difficulty" value="hard" class="mr-1"> Schwer
+      </label>
+    </div>
+  </div>
+  
+  <div class="mb-4">
+    <p class="mb-2 dark:text-white">Spielmodus:</p>
+    <div class="flex flex-wrap justify-center gap-2">
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="gameMode" value="colors" checked class="mr-1"> Farben
+      </label>
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="gameMode" value="shapes" class="mr-1"> Formen
+      </label>
+      <label class="inline-flex items-center p-2 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
+        <input type="radio" name="gameMode" value="both" class="mr-1"> Beides
+      </label>
+    </div>
+  </div>
+  
+  <div class="mb-4">
+    <label class="inline-flex items-center dark:text-white">
+      <input type="checkbox" id="timerCheckbox" class="mr-2"> Zeitbegrenzung pro Aufgabe (5 Sekunden)
+    </label>
+  </div>
+  
+  <button id="startButton" class="bg-[var(--primary-color)] hover:opacity-90 text-white font-bold py-2 px-6 rounded-full transform transition hover:scale-105">
+    Spiel starten
+  </button>
+</div>
+
+<!-- Game Container -->
+<div id="testContainer" class="hidden flex-1 flex-col items-center">
+  <div class="w-full max-w-3xl mx-auto bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg">
+    <!-- Header with progress and timer -->
+    <div class="flex justify-between items-center mb-4">
+      <div id="taskNumber" class="text-lg font-bold dark:text-white"></div>
+      
+      <div class="flex items-center">
+        <!-- Progress bar -->
+        <div class="w-40 h-2 bg-gray-200 dark:bg-gray-600 rounded-full mr-4">
+          <div id="progressBar" class="h-2 bg-[var(--primary-color)] rounded-full progress-bar" style="width: 0%"></div>
+        </div>
+        
+        <!-- Timer -->
+        <div id="timerContainer" class="relative w-8 h-8 hidden">
+          <svg class="w-8 h-8" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="16" fill="none" stroke="#e6e6e6" stroke-width="4"></circle>
+            <circle id="timerCircle" class="timer-circle" cx="18" cy="18" r="16" fill="none" stroke="var(--primary-color)" stroke-width="4" stroke-dasharray="100" stroke-dashoffset="0" transform="rotate(-90 18 18)"></circle>
+          </svg>
+          <span id="timerText" class="absolute inset-0 flex items-center justify-center text-xs font-bold">5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shape containers -->
+    <div class="top-shapes-container flex justify-center items-center mb-5 flex-wrap md:flex-nowrap max-w-3xl mx-auto" id="topRow"></div>
+    <div class="bottom-shapes-container flex justify-center items-center mb-5 flex-wrap md:flex-nowrap" id="bottomRow"></div>
+
+    <!-- Instructions -->
+    <div class="instruction dark:text-white my-4 mx-auto max-w-lg text-base leading-relaxed">
+      Klicken Sie bei Übereinstimmung den grünen Button an!<br>
+      Im anderen Fall klicken Sie den roten Button an!
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons flex justify-center my-4">
+      <button id="yesButton" class="bg-[var(--correct-color)] hover:opacity-90 w-16 h-16 mx-6 rounded-full border-2 border-gray-800 dark:border-white flex items-center justify-center transform transition hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </button>
+      <button id="noButton" class="bg-[var(--incorrect-color)] hover:opacity-90 w-16 h-16 mx-6 rounded-full border-2 border-gray-800 dark:border-white flex items-center justify-center transform transition hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Feedback message for immediate feedback -->
+    <div id="feedbackMessage" class="hidden py-2 px-4 rounded-lg text-white font-bold mx-auto max-w-md my-2"></div>
+  </div>
+
+  <!-- Results section -->
+  <div id="resultContainer" class="hidden mt-6 w-full max-w-3xl mx-auto bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-4 dark:text-white">Spielergebnis</h2>
+    <div id="result" class="p-4 border-2 border-[var(--primary-color)] rounded-lg dark:text-white"></div>
+    
+    <div class="flex flex-wrap justify-center gap-4 mt-6">
+      <button id="restartButton" class="bg-[var(--primary-color)] hover:opacity-90 text-white font-bold py-2 px-4 rounded-full transform transition hover:scale-105">
+        Neu starten
+      </button>
+      <button id="showStatsButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full transform transition hover:scale-105">
+        Statistik anzeigen
+      </button>
+    </div>
+    
+    <!-- Stats section -->
+    <div id="statsContainer" class="hidden mt-4">
+      <h3 class="text-lg font-bold mb-2 dark:text-white">Detaillierte Statistik</h3>
+      <div id="statsContent" class="text-sm dark:text-white"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Check for dark mode preference
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  document.documentElement.classList.add('dark');
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+  if (event.matches) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+});
+
+// Color pools for different difficulty levels
+const colorPool = {
+  easy: ['#0000FF', '#FFFF00', '#FF0000', '#FFFFFF', '#00FF00', '#800080', '#FFA500', '#000000'],
+  medium: ['#0000FF', '#000080', '#ADD8E6', '#FFFF00', '#FFD700', '#FF0000', '#8B0000', '#00FF00', '#006400', '#800080', '#FFA500', '#FFFFFF', '#000000'],
+  hard: ['#0000FF', '#000080', '#4169E1', '#ADD8E6', '#FFFF00', '#FFD700', '#FF0000', '#8B0000', '#DC143C', '#00FF00', '#006400', '#800080', '#9932CC', '#FFA500', '#FF8C00', '#FFFFFF', '#F0F0F0', '#000000', '#696969']
+};
+
+// Define shape types to use with SVG
+const shapes = [
+  { name: 'circle', svgPath: 'M50,10 A40,40 0 1,1 49.99,10 Z' },
+  { name: 'square', svgPath: 'M10,10 H90 V90 H10 Z' },
+  { name: 'triangle', svgPath: 'M50,10 L90,90 L10,90 Z' },
+  { name: 'star', svgPath: 'M50,10 L61,39 L92,39 L67,59 L77,90 L50,71 L23,90 L33,59 L8,39 L39,39 Z' },
+  { name: 'hexagon', svgPath: 'M50,10 L90,30 L90,70 L50,90 L10,70 L10,30 Z' },
+  { name: 'pentagon', svgPath: 'M50,10 L90,40 L75,90 L25,90 L10,40 Z' },
+  { name: 'diamond', svgPath: 'M50,10 L90,50 L50,90 L10,50 Z' },
+  { name: 'heart', svgPath: 'M50,90 L15,50 A20,20 0 0,1 50,20 A20,20 0 0,1 85,50 Z' }
+];
+
+// Game state variables
+let tasks = [];
+let currentTaskIndex = 0;
+let results = [];
+let startTime = null;
+let totalTasks = 10;
+let difficulty = 'easy';
+let gameMode = 'colors';
+let timerEnabled = false;
+let timerInterval = null;
+let remainingTime = 5; // Default timer value in seconds
+let taskHistory = [];
+
+// Event listeners for the start screen
+document.getElementById('startButton').addEventListener('click', startTest);
+
+// Event listeners for the game
+document.getElementById('yesButton').addEventListener('click', () => evaluateAnswer(true));
+document.getElementById('noButton').addEventListener('click', () => evaluateAnswer(false));
+document.getElementById('restartButton').addEventListener('click', restartTest);
+document.getElementById('showStatsButton').addEventListener('click', toggleStats);
+
+function startTest() {
+  // Get selected options
+  const radios = document.getElementsByName('taskCount');
+  for (const r of radios) {
+    if (r.checked) {
+      totalTasks = parseInt(r.value);
+      break;
+    }
+  }
+  
+  const difficultyRadios = document.getElementsByName('difficulty');
+  for (const r of difficultyRadios) {
+    if (r.checked) {
+      difficulty = r.value;
+      break;
+    }
+  }
+  
+  const gameModeRadios = document.getElementsByName('gameMode');
+  for (const r of gameModeRadios) {
+    if (r.checked) {
+      gameMode = r.value;
+      break;
+    }
+  }
+  
+  timerEnabled = document.getElementById('timerCheckbox').checked;
+  
+  // Generate tasks based on selected options
+  tasks = generateTasks(totalTasks, difficulty, gameMode);
+  
+  // Hide start screen, show game container
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('testContainer').style.display = 'flex';
+  document.getElementById('resultContainer').style.display = 'none';
+  document.getElementById('feedbackMessage').style.display = 'none';
+  document.getElementById('statsContainer').style.display = 'none';
+  
+  // Reset game state
+  currentTaskIndex = 0;
+  results = [];
+  taskHistory = [];
+  
+  // Show the first task
+  showTask(currentTaskIndex);
+}
+
+function generateTasks(count, difficulty, gameMode) {
+  const generatedTasks = [];
+  const availableColors = colorPool[difficulty];
+  
+  for (let i = 0; i < count; i++) {
+    // Determine how many top items to show based on difficulty
+    const topCount = difficulty === 'easy' ? 5 : (difficulty === 'medium' ? 6 : 7);
+    
+    // For colors mode
+    let topColors = [];
+    while (topColors.length < topCount) {
+      const color = availableColors[Math.floor(Math.random() * availableColors.length)];
+      if (!topColors.includes(color)) {
+        topColors.push(color);
+      }
+    }
+    
+    // For shapes mode
+    let topShapes = [];
+    while (topShapes.length < topCount) {
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      if (!topShapes.some(s => s.name === shape.name)) {
+        topShapes.push(shape);
+      }
+    }
+    
+    // Determine if this task should have matching items
+    // 50% chance that both bottom items match top items
+    const shouldHaveMatches = Math.random() < 0.5;
+    
+    // Select bottom items
+    let bottomColors = [];
+    let bottomShapes = [];
+    
+    if (shouldHaveMatches) {
+      // Both items should match
+      bottomColors.push(topColors[Math.floor(Math.random() * topColors.length)]);
+      bottomColors.push(topColors[Math.floor(Math.random() * topColors.length)]);
+      
+      bottomShapes.push(topShapes[Math.floor(Math.random() * topShapes.length)]);
+      bottomShapes.push(topShapes[Math.floor(Math.random() * topShapes.length)]);
+    } else {
+      // At least one item should not match
+      if (Math.random() < 0.5) {
+        // First item matches, second doesn't
+        bottomColors.push(topColors[Math.floor(Math.random() * topColors.length)]);
+        let nonMatchColor;
+        do {
+          nonMatchColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+        } while (topColors.includes(nonMatchColor));
+        bottomColors.push(nonMatchColor);
+        
+        bottomShapes.push(topShapes[Math.floor(Math.random() * topShapes.length)]);
+        let nonMatchShape;
+        do {
+          nonMatchShape = shapes[Math.floor(Math.random() * shapes.length)];
+        } while (topShapes.some(s => s.name === nonMatchShape.name));
+        bottomShapes.push(nonMatchShape);
+      } else {
+        // First item doesn't match, second might
+        let nonMatchColor;
+        do {
+          nonMatchColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+        } while (topColors.includes(nonMatchColor));
+        bottomColors.push(nonMatchColor);
+        
+        if (Math.random() < 0.5) {
+          bottomColors.push(topColors[Math.floor(Math.random() * topColors.length)]);
+        } else {
+          do {
+            nonMatchColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+          } while (topColors.includes(nonMatchColor));
+          bottomColors.push(nonMatchColor);
+        }
+        
+        let nonMatchShape;
+        do {
+          nonMatchShape = shapes[Math.floor(Math.random() * shapes.length)];
+        } while (topShapes.some(s => s.name === nonMatchShape.name));
+        bottomShapes.push(nonMatchShape);
+        
+        if (Math.random() < 0.5) {
+          bottomShapes.push(topShapes[Math.floor(Math.random() * topShapes.length)]);
+        } else {
+          do {
+            nonMatchShape = shapes[Math.floor(Math.random() * shapes.length)];
+          } while (topShapes.some(s => s.name === nonMatchShape.name));
+          bottomShapes.push(nonMatchShape);
+        }
+      }
+    }
+    
+    generatedTasks.push({
+      topColors,
+      bottomColors,
+      topShapes,
+      bottomShapes,
+      shouldHaveMatches
+    });
+  }
+  
+  return generatedTasks;
+}
+
+function showTask(index) {
+  const task = tasks[index];
+  
+  // Update task number and progress bar
+  document.getElementById('taskNumber').textContent = `Aufgabe ${index + 1} von ${tasks.length}`;
+  document.getElementById('progressBar').style.width = `${((index) / tasks.length) * 100}%`;
+  
+  const topRow = document.getElementById('topRow');
+  const bottomRow = document.getElementById('bottomRow');
+  topRow.innerHTML = ''; // Clear top row
+  bottomRow.innerHTML = ''; // Clear bottom row
+  
+  // Show items in top row based on game mode
+  let topCount = task.topColors.length;
+  
+  for (let i = 0; i < topCount; i++) {
+    const el = document.createElement('div');
+    el.className = 'shape-box w-24 h-24 border-3 border-[#000080] dark:border-[#5D5CDE] m-2 flex items-center justify-center bg-[#ffffcc] dark:bg-[#2d2d4d] rounded-lg shadow-md hover:shadow-lg transition-shadow';
+    
+    if (gameMode === 'colors' || gameMode === 'both') {
+      // Color mode
+      const color = task.topColors[i];
+      
+      if (gameMode === 'colors') {
+        // Just color circles
+        const circle = document.createElement('div');
+        circle.className = 'w-16 h-16 rounded-full border-2 border-gray-700 dark:border-gray-300';
+        circle.style.backgroundColor = color;
+        el.appendChild(circle);
+      } else {
+        // Both colors and shapes
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 100 100");
+        svg.setAttribute("width", "60");
+        svg.setAttribute("height", "60");
+        svg.classList.add("shape-svg");
+        
+        const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        shape.setAttribute("d", task.topShapes[i].svgPath);
+        shape.setAttribute("fill", color);
+        shape.setAttribute("stroke", "#000");
+        shape.setAttribute("stroke-width", "2");
+        
+        svg.appendChild(shape);
+        el.appendChild(svg);
+      }
+    } else if (gameMode === 'shapes') {
+      // Shape mode only
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 100 100");
+      svg.setAttribute("width", "60");
+      svg.setAttribute("height", "60");
+      svg.classList.add("shape-svg");
+      
+      const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      shape.setAttribute("d", task.topShapes[i].svgPath);
+      shape.setAttribute("fill", "#666");
+      shape.setAttribute("stroke", "#000");
+      shape.setAttribute("stroke-width", "2");
+      
+      svg.appendChild(shape);
+      el.appendChild(svg);
+    }
+    
+    topRow.appendChild(el);
+  }
+  
+  // Show items in bottom row based on game mode
+  for (let i = 0; i < 2; i++) {
+    const container = document.createElement('div');
+    container.className = 'target-container w-24 h-24 border-3 border-[#000080] dark:border-[#5D5CDE] m-2 flex items-center justify-center bg-[#ffffcc] dark:bg-[#2d2d4d] rounded-lg shadow-md';
+    
+    if (gameMode === 'colors' || gameMode === 'both') {
+      const color = task.bottomColors[i];
+      
+      if (gameMode === 'colors') {
+        // Just color circles
+        const circle = document.createElement('div');
+        circle.className = 'w-16 h-16 rounded-full border-2 border-gray-700 dark:border-gray-300';
+        circle.style.backgroundColor = color;
+        container.appendChild(circle);
+      } else {
+        // Both colors and shapes
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 100 100");
+        svg.setAttribute("width", "60");
+        svg.setAttribute("height", "60");
+        
+        const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        shape.setAttribute("d", task.bottomShapes[i].svgPath);
+        shape.setAttribute("fill", color);
+        shape.setAttribute("stroke", "#000");
+        shape.setAttribute("stroke-width", "2");
+        
+        svg.appendChild(shape);
+        container.appendChild(svg);
+      }
+    } else if (gameMode === 'shapes') {
+      // Shape mode only
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 100 100");
+      svg.setAttribute("width", "60");
+      svg.setAttribute("height", "60");
+      
+      const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      shape.setAttribute("d", task.bottomShapes[i].svgPath);
+      shape.setAttribute("fill", "#666");
+      shape.setAttribute("stroke", "#000");
+      shape.setAttribute("stroke-width", "2");
+      
+      svg.appendChild(shape);
+      container.appendChild(svg);
+    }
+    
+    bottomRow.appendChild(container);
+  }
+  
+  // Reset and start timer if enabled
+  if (timerEnabled) {
+    resetTimer();
+    startTimer();
+    document.getElementById('timerContainer').classList.remove('hidden');
+  } else {
+    document.getElementById('timerContainer').classList.add('hidden');
+  }
+  
+  startTime = Date.now();
+}
+
+function resetTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  
+  remainingTime = 5;
+  document.getElementById('timerText').textContent = remainingTime;
+  document.getElementById('timerCircle').style.strokeDasharray = "100";
+  document.getElementById('timerCircle').style.strokeDashoffset = "0";
+}
+
+function startTimer() {
+  const timerCircle = document.getElementById('timerCircle');
+  const timerText = document.getElementById('timerText');
+  const totalTime = 5; // seconds
+  
+  timerCircle.style.strokeDasharray = "100";
+  timerCircle.style.strokeDashoffset = "0";
+  
+  timerInterval = setInterval(() => {
+    remainingTime -= 1;
+    timerText.textContent = remainingTime;
+    
+    // Update timer circle
+    const offset = (1 - remainingTime / totalTime) * 100;
+    timerCircle.style.strokeDashoffset = offset;
+    
+    if (remainingTime <= 0) {
+      clearInterval(timerInterval);
+      // Time's up - treat as incorrect answer
+      evaluateAnswer(false, true);
+    }
+  }, 1000);
+}
+
+function evaluateAnswer(userSaysYes, timedOut = false) {
+  const endTime = Date.now();
+  const task = tasks[currentTaskIndex];
+  let reactionTime = (endTime - startTime) / 1000; // in seconds
+  
+  // Clear timer if it's running
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  
+  // Determine if the answer is correct based on game mode
+  let correctAnswer = false;
+  
+  if (gameMode === 'colors') {
+    // All bottom colors must exist in top colors
+    correctAnswer = task.bottomColors.every(color => task.topColors.includes(color));
+  } else if (gameMode === 'shapes') {
+    // All bottom shapes must exist in top shapes
+    correctAnswer = task.bottomShapes.every(bottomShape => 
+      task.topShapes.some(topShape => topShape.name === bottomShape.name)
+    );
+  } else if (gameMode === 'both') {
+    // Both shape and color must match
+    correctAnswer = task.bottomShapes.every((bottomShape, index) => 
+      task.topShapes.some((topShape, idx) => 
+        topShape.name === bottomShape.name && task.topColors[idx] === task.bottomColors[index]
+      )
+    );
+  }
+  
+  const userCorrect = (correctAnswer && userSaysYes) || (!correctAnswer && !userSaysYes);
+  
+  // If timed out, override the reaction time
+  if (timedOut) {
+    reactionTime = 5.0; // Maximum time
+  }
+  
+  // Store the result
+  results.push({ 
+    taskIndex: currentTaskIndex,
+    correct: userCorrect, 
+    reactionTime: reactionTime,
+    timedOut: timedOut
+  });
+  
+  // Store task history for detailed stats
+  taskHistory.push({
+    taskNumber: currentTaskIndex + 1,
+    gameMode: gameMode,
+    difficulty: difficulty,
+    correctAnswer: correctAnswer,
+    userAnswer: userSaysYes,
+    userCorrect: userCorrect,
+    reactionTime: reactionTime,
+    timedOut: timedOut
+  });
+  
+  // Show immediate feedback
+  showFeedback(userCorrect);
+  
+  // Move to next task after a short delay
+  setTimeout(() => {
+    nextTask();
+  }, 1000);
+}
+
+function showFeedback(isCorrect) {
+  const feedbackEl = document.getElementById('feedbackMessage');
+  feedbackEl.style.display = 'block';
+  feedbackEl.textContent = isCorrect ? "Richtig!" : "Falsch!";
+  feedbackEl.className = isCorrect 
+    ? "bg-[var(--correct-color)] py-2 px-4 rounded-lg text-white font-bold mx-auto max-w-md my-2 result-animation"
+    : "bg-[var(--incorrect-color)] py-2 px-4 rounded-lg text-white font-bold mx-auto max-w-md my-2 result-animation";
+}
+
+function nextTask() {
+  document.getElementById('feedbackMessage').style.display = 'none';
+  currentTaskIndex++;
+  
+  if (currentTaskIndex < tasks.length) {
+    showTask(currentTaskIndex);
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  // Update progress bar to 100%
+  document.getElementById('progressBar').style.width = '100%';
+  
+  const correctCount = results.filter(r => r.correct).length;
+  const correctPercent = (correctCount / tasks.length) * 100;
+  
+  const avgTime = results.reduce((sum, r) => sum + r.reactionTime, 0) / tasks.length;
+  const timeoutCount = results.filter(r => r.timedOut).length;
+  
+  let baseRating = '';
+  if (correctPercent >= 90) baseRating = 'sehr gut';
+  else if (correctPercent >= 80) baseRating = 'gut';
+  else if (correctPercent >= 70) baseRating = 'befriedigend';
+  else if (correctPercent >= 60) baseRating = 'ausreichend';
+  else baseRating = 'nicht bestanden';
+  
+  // Adjust rating based on difficulty
+  let difficultyBonus = 0;
+  if (difficulty === 'medium') difficultyBonus = 0.5;
+  else if (difficulty === 'hard') difficultyBonus = 1;
+  
+  // Apply time penalty if average time is more than expected
+  let timeOver = avgTime - 2.5;
+  let timePenaltyPercent = 0;
+  if (timeOver > 0) {
+    timePenaltyPercent = timeOver * 10;
+  }
+  
+  const ratingMap = { 
+    'sehr gut': 5, 
+    'gut': 4, 
+    'befriedigend': 3, 
+    'ausreichend': 2, 
+    'nicht bestanden': 1 
+  };
+  
+  let ratingValue = ratingMap[baseRating];
+  ratingValue += difficultyBonus;
+  let stepsDown = Math.floor(timePenaltyPercent / 10);
+  ratingValue -= stepsDown;
+  
+  if (ratingValue > 5) ratingValue = 5;
+  if (ratingValue < 1) ratingValue = 1;
+  
+  const finalRating = Object.keys(ratingMap).find(key => ratingMap[key] === Math.round(ratingValue));
+  
+  // Show results container
+  document.getElementById('resultContainer').style.display = 'block';
+  
+  // Update result text
+  let resultText = `
+    <div class="text-lg">
+      <div class="mb-3"><span class="font-bold">Richtige Antworten:</span> ${correctCount} von ${tasks.length} (${Math.round(correctPercent)}%)</div>
+      <div class="mb-3"><span class="font-bold">Durchschnittszeit:</span> ${avgTime.toFixed(2)} Sekunden</div>
+      <div class="mb-3"><span class="font-bold">Schwierigkeitsgrad:</span> ${difficulty === 'easy' ? 'Leicht' : (difficulty === 'medium' ? 'Mittel' : 'Schwer')}</div>
+      <div class="mb-3"><span class="font-bold">Spielmodus:</span> ${gameMode === 'colors' ? 'Farben' : (gameMode === 'shapes' ? 'Formen' : 'Beides')}</div>
+      <div class="text-xl font-bold mt-3 ${ratingValue >= 4 ? 'text-green-600 dark:text-green-400' : (ratingValue < 3 ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400')}">Bewertung: ${finalRating}</div>
+    </div>
+  `;
+  
+  document.getElementById('result').innerHTML = resultText;
+  
+  // Prepare detailed stats
+  generateDetailedStats();
+  
+  // Hide game elements
+  document.getElementById('yesButton').style.display = 'none';
+  document.getElementById('noButton').style.display = 'none';
+}
+
+function generateDetailedStats() {
+  const statsContent = document.getElementById('statsContent');
+  
+  // Calculate fast/medium/slow response distribution
+  const fastResponses = taskHistory.filter(t => t.reactionTime < 1.5).length;
+  const mediumResponses = taskHistory.filter(t => t.reactionTime >= 1.5 && t.reactionTime < 3).length;
+  const slowResponses = taskHistory.filter(t => t.reactionTime >= 3).length;
+  
+  // Calculate streaks
+  let currentStreak = 0;
+  let maxStreak = 0;
+  
+  for (const task of taskHistory) {
+    if (task.userCorrect) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+  
+  // Create stats content
+  let statsHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg">
+        <h4 class="font-bold mb-2">Antwortzeiten</h4>
+        <div class="flex items-center mb-1">
+          <span class="w-1/2">Schnell (&lt;1.5s):</span>
+          <div class="w-1/2 h-4 bg-gray-200 dark:bg-gray-600 rounded-full">
+            <div class="h-4 bg-green-500 rounded-full" style="width: ${(fastResponses / tasks.length) * 100}%"></div>
+          </div>
+        </div>
+        <div class="flex items-center mb-1">
+          <span class="w-1/2">Mittel (1.5-3s):</span>
+          <div class="w-1/2 h-4 bg-gray-200 dark:bg-gray-600 rounded-full">
+            <div class="h-4 bg-yellow-500 rounded-full" style="width: ${(mediumResponses / tasks.length) * 100}%"></div>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <span class="w-1/2">Langsam (&gt;3s):</span>
+          <div class="w-1/2 h-4 bg-gray-200 dark:bg-gray-600 rounded-full">
+            <div class="h-4 bg-red-500 rounded-full" style="width: ${(slowResponses / tasks.length) * 100}%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg">
+        <h4 class="font-bold mb-2">Leistungsstatistik</h4>
+        <div>Längste Streak: ${maxStreak} richtige Antworten in Folge</div>
+        <div>Zeitüberschreitungen: ${taskHistory.filter(t => t.timedOut).length}</div>
+        <div>Schnellste Antwort: ${Math.min(...taskHistory.map(t => t.reactionTime)).toFixed(2)}s</div>
+        <div>Langsamste Antwort: ${Math.max(...taskHistory.map(t => t.reactionTime)).toFixed(2)}s</div>
+      </div>
+    </div>
+    
+    <div class="mt-4 overflow-x-auto">
+      <table class="min-w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-gray-600 text-xs">
+        <thead>
+          <tr class="bg-gray-200 dark:bg-slate-800">
+            <th class="py-2 px-3 border">Nr.</th>
+            <th class="py-2 px-3 border">Antwort</th>
+            <th class="py-2 px-3 border">Zeit (s)</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+  
+  taskHistory.forEach((task, index) => {
+    statsHTML += `
+      <tr class="${index % 2 === 0 ? 'bg-gray-100 dark:bg-slate-600' : 'bg-white dark:bg-slate-700'}">
+        <td class="py-2 px-3 border text-center">${task.taskNumber}</td>
+        <td class="py-2 px-3 border text-center ${task.userCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${task.userCorrect ? '✓' : '✗'}</td>
+        <td class="py-2 px-3 border text-center">${task.timedOut ? 'Zeit abgelaufen' : task.reactionTime.toFixed(2)}</td>
+      </tr>
+    `;
+  });
+  
+  statsHTML += `
+        </tbody>
+      </table>
+    </div>
+  `;
+  
+  statsContent.innerHTML = statsHTML;
+}
+
+function toggleStats() {
+  const statsContainer = document.getElementById('statsContainer');
+  if (statsContainer.style.display === 'none' || statsContainer.style.display === '') {
+    statsContainer.style.display = 'block';
+    document.getElementById('showStatsButton').textContent = 'Statistik ausblenden';
+  } else {
+    statsContainer.style.display = 'none';
+    document.getElementById('showStatsButton').textContent = 'Statistik anzeigen';
+  }
+}
+
+function restartTest() {
+  // Hide result container
+  document.getElementById('resultContainer').style.display = 'none';
+  document.getElementById('testContainer').style.display = 'none';
+  
+  // Show buttons again
+  document.getElementById('yesButton').style.display = 'inline-flex';
+  document.getElementById('noButton').style.display = 'inline-flex';
+  
+  // Show start screen
+  document.getElementById('startScreen').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
