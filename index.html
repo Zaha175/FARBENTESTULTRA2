@@ -52,10 +52,73 @@
   .timer-circle {
     transition: stroke-dashoffset 1s linear;
   }
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 3.5rem;
+    height: 2rem;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 2rem;
+  }
+  
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 1.5rem;
+    width: 1.5rem;
+    left: 0.25rem;
+    bottom: 0.25rem;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .toggle-slider {
+    background-color: var(--primary-color);
+  }
+  
+  input:checked + .toggle-slider:before {
+    transform: translateX(1.5rem);
+  }
 </style>
 <title>Farbenvergleichstest</title>
 </head>
 <body class="font-sans text-center p-5 m-0 min-h-screen flex flex-col bg-gradient-to-b from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)]">
+
+<!-- Dark mode toggle -->
+<div class="absolute top-4 right-4 flex items-center">
+  <span class="mr-2 text-gray-800 dark:text-gray-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  </span>
+  <label class="toggle-switch">
+    <input type="checkbox" id="darkModeToggle">
+    <span class="toggle-slider"></span>
+  </label>
+  <span class="ml-2 text-gray-800 dark:text-gray-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+  </span>
+</div>
 
 <h1 class="text-3xl mb-6 font-bold text-[#000080] dark:text-[#8080ff]">Farbenvergleichstest</h1>
 
@@ -197,17 +260,55 @@
 </div>
 
 <script>
-// Check for dark mode preference
+// Dark mode variables and functions
+let userPrefersDark = false;
+let systemPrefersDark = false;
+
+// Check for system dark mode preference
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  document.documentElement.classList.add('dark');
+  systemPrefersDark = true;
 }
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-  if (event.matches) {
-    document.documentElement.classList.add('dark');
+
+// Update dark mode based on current preferences
+function updateDarkMode() {
+  if (userPrefersDark !== null) {
+    // User has made an explicit choice
+    if (userPrefersDark) {
+      document.documentElement.classList.add('dark');
+      document.getElementById('darkModeToggle').checked = true;
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.getElementById('darkModeToggle').checked = false;
+    }
   } else {
-    document.documentElement.classList.remove('dark');
+    // Use system preference
+    if (systemPrefersDark) {
+      document.documentElement.classList.add('dark');
+      document.getElementById('darkModeToggle').checked = true;
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.getElementById('darkModeToggle').checked = false;
+    }
+  }
+}
+
+// Listen for system preference changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+  systemPrefersDark = event.matches;
+  // Only apply if user hasn't set their own preference
+  if (userPrefersDark === null) {
+    updateDarkMode();
   }
 });
+
+// Setup dark mode toggle
+document.getElementById('darkModeToggle').addEventListener('change', function() {
+  userPrefersDark = this.checked;
+  updateDarkMode();
+});
+
+// Initial dark mode setup
+updateDarkMode();
 
 // Color pools for different difficulty levels
 const colorPool = {
