@@ -215,8 +215,8 @@
 
     <!-- Instructions -->
     <div class="instruction dark:text-white my-4 mx-auto max-w-lg text-base leading-relaxed">
-      Klicken Sie bei Übereinstimmung den grünen Button an!<br>
-      Im anderen Fall klicken Sie den roten Button an!
+      Klicke bei Übereinstimmung den grünen Button an!<br>
+      Im anderen Fall klicke den roten Button an!
     </div>
 
     <!-- Buttons -->
@@ -823,6 +823,17 @@ function showResults() {
   // Hide game elements
   document.getElementById('yesButton').style.display = 'none';
   document.getElementById('noButton').style.display = 'none';
+  
+  // Add share button
+  const shareButton = document.createElement('button');
+  shareButton.textContent = 'Auf X teilen';
+  shareButton.className = 'bg-[var(--primary-color)] hover:opacity-90 text-white font-bold py-2 px-4 rounded-full transform transition hover:scale-105 mt-4';
+  shareButton.addEventListener('click', () => {
+    const resultText = document.getElementById('result').innerText;
+    const url = window.location.href;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Mein Farbenvergleichstest-Score: ${resultText}. Teste dich: ${url} #FarbenChallenge`)}`, '_blank');
+  });
+  document.getElementById('resultContainer').appendChild(shareButton);
 }
 
 function generateDetailedStats() {
